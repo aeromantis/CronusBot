@@ -1,0 +1,10 @@
+module.exports = {
+	name: '',
+	aliases: [''],
+	description: '!',
+	args: ,
+	usage: ``,
+	staffOnly: ,
+	execute(message, args) {
+
+};

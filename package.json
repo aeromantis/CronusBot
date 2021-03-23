@@ -1,0 +1,16 @@
+{
+  "name": "cronusbot",
+  "version": "1.0.0",
+  "description": "A bot for the Elysium server",
+  "main": "cronus",
+  "author": "aeromantis",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/opus": "^0.5.0",
+    "discord.js": "^12.5.1",
+    "ffmpeg": "0.0.4",
+    "ffmpeg-static": "^4.2.8",
+    "say": "^0.16.0",
+    "ytdl-core": "^4.5.0"
+  }
+}
