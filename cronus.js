@@ -263,7 +263,7 @@ client.on('message', async message => {
 			}
 		}
 			//confirm role
-			if (reaction.message.id === "776916894761615441") {
+			if (reaction.message.id === "824036522516152341") {
 				if (reaction.emoji.name ==="🇨") {
 					await member.roles.add("775859415068442664")
 				}
