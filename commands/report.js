@@ -1,4 +1,4 @@
-
+const Discord = require('discord.js');
 const fs = require('fs');
 const { report } = require('process');
 const readline = require('readline');
@@ -88,13 +88,9 @@ module.exports = {
 				})
 
 				
-		}).catch(console.error);
-
-		
-
-
-		
-
-			
+		}).catch(console.error);			
 
 }}
+
+
+

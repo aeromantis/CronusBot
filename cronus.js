@@ -215,65 +215,14 @@ client.on('message', async message => {
 
 			//report roles
 
-			if (reaction.emoji.name === "🔍"){
-				i = 0;
-				let text = fs.readFileSync('./database/activeReports.txt','utf8').toString().split(`\n`);
-				while (i < text.length) {
-
-
-					messageID = text[i].substring(
-								text[i].lastIndexOf(`(`)+1,
-								text[i].lastIndexOf(`)`)
-							)
-		
-					if(messageID == reaction.message.id){						
-						break;
-					}
-					i++
-				}
-
-				let reportChannelID = text[i].substring(
-					text[i].lastIndexOf(`!`)+3,
-					text[i].lastIndexOf(`£`)-1
-				)
-				let reportChannel = reaction.message.guild.channels.cache.get(reportChannelID)
-				if(reportChannel == undefined){
-					return;
-				}
-
-				let embed = new Discord.MessageEmbed()
-					.setTitle(`REPORT CLAIMED`)
-					.setDescription(`${member} has claimed this report.`)
-					.setColor(`GREEN`)
-				reportChannel.send(embed)
-			}
+			var ReportsFile = require(`./cronus_modules/reportRole.js`);
+			ReportsFile.reportRoles(reaction, user, member);
 
 		})
 
 		client.on("messageReactionRemove", async (reaction, user) => {
-			if (reaction.message.partial) await reaction.message.fetch();
-			if (user.bot) return;
-			if (!reaction.message.guild) return;
-			let member = reaction.message.guild.members.cache.get(user.id)
-
-			if (reaction.message.channel.id === "813589521035821127") {
-				let rolesArray = fs.readFileSync('./database/reactionRoles.txt','utf8').toString().split(`|`);
-				i = 0
-				while (i < rolesArray.length) {
-					currentLine = rolesArray[i];
-					splitLine = currentLine.split(" - ")
-					emoji = splitLine[0];
-					reactedEmoji = splitLine[0];
-					reactedRoleName = splitLine[1];
-					var restrictedState = splitLine[2]
-					if(reaction.emoji.name == reactedEmoji){
-						break
-					}
-					i++
-			}			
-				roleToRAssign = reaction.message.guild.roles.cache.find(role => role.name === reactedRoleName);
-				await member.roles.remove(roleToRAssign);
-			}
+			var ReactionRemoved = require(`./cronus_modules/reactionRemoved.js`)
+			ReactionRemoved.reactionRemovedRun(reaction, user)
 		})
 
 	
