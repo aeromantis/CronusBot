@@ -2,12 +2,15 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const readline = require('readline');
 
+const Enmap = require('enmap');
+
 const { prefix, token } = require('./config.json');
 const { report } = require('process');
 const client = new Discord.Client({ partials: ["MESSAGE","CHANNEL","REACTION"]});
 const cooldowns = new Discord.Collection();
 const staffOnly = new Discord.Collection();
 const managerOnly = new Discord.Collection();
+
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 client.commands = new Discord.Collection();
@@ -18,6 +21,12 @@ for (const file of commandFiles) {
 }
 
 
+module.exports = {
+	reportLogChannel: "",
+	cronusLogChannel: "",
+	logPostChannel: "",
+	reportCategory: "",
+}
 
 client.once('ready', () => {
 	console.log('Ready!');
@@ -45,6 +54,8 @@ client.on('guildMemberAdd', (member) => {
 	})
 
 client.on('message', async message => {
+
+	const testVar = "hlelo"
 
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/)
@@ -185,85 +196,12 @@ client.on('message', async message => {
 			if (!reaction.message.guild) return;
 			var member = reaction.message.guild.members.cache.get(user.id)
 
-			//automated role from files
-			if (reaction.message.channel.id === "813589521035821127") {
-				let rolesArray = fs.readFileSync('./database/reactionRoles.txt','utf8').toString().split(`|`);
-				i = 0
-						  
-				while (i < rolesArray.length) {
-					currentLine = rolesArray[i];
-					splitLine = currentLine.split(" - ")
-					reactedEmoji = splitLine[0];
-					var reactedRoleName = splitLine[1];
-					if(splitLine[2] == "restricted"){
-						var restrictedRole = true;
-					} else {
-						var restrictedRole = false;
-					}
-					if(reaction.emoji.name == reactedEmoji){
-						break
-					}
-					i++
-			}
-			console.log(rolesArray);
-			console.log(restrictedRole);			
-			var roleToRAssign = reaction.message.guild.roles.cache.find(role => role.name === reactedRoleName);	
-			if(!restrictedRole){					
-				await member.roles.add(roleToRAssign)
-			} else {
-				const responseChannel = reaction.message.guild.channels.cache.get("775878357782364171");
-				let activeRequests = fs.readFileSync('./database/roleCalls.txt','utf8').toString().split(`\n`);
-				if(activeRequests.includes(member.toString())){
-					responseChannel.send(`${member}, you already have an active request. Please wait.`)
-					return
-				} else if(member.roles.cache.some(role => role.name === reactedRoleName)){
-					return
-				}
-				fs.appendFile('./database/roleCalls.txt', `${member}\n`, function (err) {
-					if (err) throw err;
-			  	});
-				const logChannel =  reaction.message.guild.channels.cache.get("777150428616982538");
-								
-				logChannel.send(`| ${member} is requesting the **${roleToRAssign.name}** role! React below to accept or reject this request.`).then(async function (message) {
-					await message.react('☑️')
-					await message.react('❌')
-					responseChannel.send(`${member}, your request has been submitted. Please be patient.`)
-					const filter = (reaction, user) => {
-						return user !== client.id
-					};
-	
-					const collector = message.createReactionCollector(filter, { time: 1800000 });
-					var forcedEnd = false;
-	
-					collector.on('collect', (reaction, user) => {
-						   if (reaction.emoji.name === `☑️`){
-							   member.roles.add(roleToRAssign);
-							   responseChannel.send(`${member}, your request has been approved by ${user}`)
-								forcedEnd = true;
-							   collector.stop();
-							   
-						   } else {
-							   responseChannel.send(`${member}, your request has been rejected by ${user}`)
-							   forcedEnd = true;
-							   collector.stop();
-							   
-						   }
-					});
-					collector.on('end', collected => {
-						textFile = fs.readFileSync('./database/roleCalls.txt','utf8')
-						let newValue = textFile.replace(member, ``);
-						fs.writeFileSync('./database/roleCalls.txt', newValue, 'utf-8');	
-						if(!forcedEnd){
-							responseChannel.send(`${member}, your request has timed out. Please try again later.`)
-							message.delete();													
-						}
-	
-					});
-				})
-			}
-		}
+			//automated role from files			
+			var RoleReacts = require(`./cronus_modules/roleReactions.js`)
+			RoleReacts.assignRoles(reaction, user);
+
 			//confirm role
-			if (reaction.message.id === "824036522516152341") {
+			if (reaction.message.id === "776916894761615441") {
 				if (reaction.emoji.name ==="🇨") {
 					await member.roles.add("775859415068442664")
 				}

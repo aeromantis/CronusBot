@@ -1,5 +1,5 @@
 const Discord = require(`discord.js`)
-
+const cronus = require(`../cronus.js`)
 
 module.exports = {
 	name: 'pot',
@@ -11,6 +11,12 @@ module.exports = {
     managerOnly: true,
 	cooldown:5,
 	execute(message, args) {
+
+        if(args[0] == "2"){
+            console.log(cronus)
+            return
+        }
+        
 
         const carniEmbed = new Discord.MessageEmbed()
             .setColor('#0099ff')
