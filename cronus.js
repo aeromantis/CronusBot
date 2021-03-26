@@ -34,6 +34,9 @@ client.once('ready', () => {
     client.user.setActivity('Elysium - !help', { type: 'PLAYING' });
  });
 
+ // ---------------------------------------------------------------------------------------------------------------------
+ // ---------------------------------------------------------------------------------------------------------------------
+
 client.on('guildMemberAdd', (member) => {
 		
 	    channel = member.guild.channels.cache.get("775572248857542678");
@@ -53,10 +56,12 @@ client.on('guildMemberAdd', (member) => {
 		channel.send(welcomeEmbed);
 	})
 
+	// ---------------------------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------------------------------------------------
+
 client.on('message', async message => {
-
-	const testVar = "hlelo"
-
+// ---------------------------------------------------------------------------------------------------------------------
+// commands setup
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/)
 	const commandName = args.shift().toLowerCase();
@@ -65,6 +70,8 @@ client.on('message', async message => {
 		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 		if (!command) return;
 
+// ---------------------------------------------------------------------------------------------------------------------
+// auths checker
 	if(command.staffOnly){
 		if (!message.member.roles.cache.some(role => role.name === 'Staff')){
 			message.react('❌');
@@ -83,9 +90,8 @@ client.on('message', async message => {
 		}	
 	}
 		
-
-
-
+// ---------------------------------------------------------------------------------------------------------------------
+// command handler
 	if (command.args && !args.length) {
 	let reply = `You didn't provide any arguments, ${message.author}!`;
 	message.react('❌');
@@ -132,63 +138,16 @@ client.on('message', async message => {
 		});
 	message.react('❌');
 	}	
+
+	// ---------------------------------------------------------------------------------------------------------------------
 		
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-
-
-	})
-
-	function unbanInterval() {
-	    var text = fs.readFileSync('./database/discordBanList.txt','utf8').toString().split(`\n`);
-	    i = 0;
-	    var d = new Date();
-
-	    while (i < text.length) {
-		    banLength = 
-				text[i].substring(
-				text[i].lastIndexOf(`[`)+1,
-				text[i].lastIndexOf(`]`)
-			)
-
-			timesArray = banLength.split(`/`);
-			banYear = timesArray[0];
-			banMonth = timesArray[1];
-			banDay = timesArray[2];
-			banHour = timesArray[3];
-
-			if(banYear <= d.getFullYear()){
-				if (banMonth <= d.getMonth()+1){
-					if (banDay <= d.getDate()){
-						if(banHour  <= d.getHours()){
-							idToUnban = 
-							text[i].substring(
-							text[i].lastIndexOf(`<`)+3,
-							text[i].lastIndexOf(`>`)
-						)
-
-							message.guild.fetchBans().then(bans=> {
-						      if(bans.size == 0) return console.log(`no bans found`)
-						      let bUser = message.guild.fetchBan(idToUnban)
-						      if(!bUser) return console.log(`user is not banned`)
-						      message.guild.members.unban(idToUnban)
-						  	console.log(`${idToUnban} has been automatically unbanned.`);
-							});
-							
-							
-						}
-					}
-
-				}
-			}
-			i++
-		}
-		console.log(`unban check ran`)
-	}	
-
-	client.setInterval(function() {
-		unbanInterval();
-	  }, 60000);
+	})	
+	// ---------------------------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------------------------------------------------
 
 		client.on("messageReactionAdd", async (reaction, user) => {
 			if (reaction.message.partial) await reaction.message.fetch();
@@ -219,6 +178,8 @@ client.on('message', async message => {
 			ReportsFile.reportRoles(reaction, user, member);
 
 		})
+
+		// ---------------------------------------------------------------------------------------------------------------------
 
 		client.on("messageReactionRemove", async (reaction, user) => {
 			var ReactionRemoved = require(`./cronus_modules/reactionRemoved.js`)
